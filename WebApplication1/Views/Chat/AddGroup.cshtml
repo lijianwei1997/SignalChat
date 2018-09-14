@@ -1,0 +1,25 @@
+﻿
+@{
+    
+    Layout = null;
+}
+
+
+
+<div>
+    <form action="/UserGroup/AddGroup" method="post">
+        <input type="hidden" value="@Common.Common.GetUser().id" name="uid" id="uid"/>
+        <p><span>群名</span> ：<input type="text" name="GroupName" /></p>
+        <p><span>群简介</span>：<input type="text" name="GroupIntro" /></p>
+        <p><span>群公告</span>：<input type="text" name="GroupNotice" /></p>
+        
+        <input type="submit"  value="提交"/>
+
+
+    </form>
+
+
+
+
+
+</div>

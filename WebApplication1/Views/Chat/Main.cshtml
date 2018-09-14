@@ -1,0 +1,105 @@
+﻿@using WebApplication1.Models;
+@{
+    
+    Layout = null; 
+    }
+
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+@{
+    
+    List<UserGroupToUSer> ut =new List<UserGroupToUSer>();
+    int uid = Common.Common.GetUser().id;
+    ut=Common.Common.GetGroupList(uid);
+   int id=Common.Common.GetUser().roleid;
+    
+ }
+<ul>
+   @if(id==4)
+{
+    <a href="AddGroup">添加群</a>
+}
+
+@foreach (var item in ut)
+{ 
+    if(id!=4){
+ <li><a href="Chat/@item.UG_GroupID">@Common.Common.GetGroupName(Convert.ToInt32(item.UG_GroupID))</a></li> 
+}
+ else
+{
+
+    <li><a href="Chat/@item.UG_GroupID" onmouseover="Dis(this)"onmouseout="Hid(this)" >@Common.Common.GetGroupName(Convert.ToInt32(item.UG_GroupID))</a><input value="@item.UG_GroupID"  style="display:none"/><label style="display:inline-block" onclick="DeleteGroup(this)">删除</label></li>
+}
+
+}
+</ul>
+ @if(id==4)
+{
+    
+
+<script>
+    var tid = 0;
+    //$('a').hover(function () {
+    //    tid = setTimeout(function () {
+    //        //当触发hover就开始自动在1秒后执行相应代码
+    //        console.log(1);
+    //        $('a').parent().children().find('input').eq(0).attr('style', "display:block");
+    //        console.log($('a').parent().children().find('input').eq(0));
+    //    }, 1000);
+    //}, function () {
+    //    clearTimeout(tid);//当在1秒内退出了hover事件就取消计时代码
+        
+    //});
+
+
+    function Dis(obj)
+    {
+       
+      setTimeout(dis(obj),3000);
+       
+    }
+    function dis(obj)
+    {
+        $(obj).next().next('label').css({'display':'inline-block',"color":'red'});
+    }
+    function Hid(obj) {
+        
+     
+      setTimeout(hide(obj),500)
+      console.log($(obj).next('input').val());
+        
+    }
+    function hide(obj)
+    {
+        $(obj).next().next('label').css({ 'display': 'none', "color": 'red' })
+    }
+
+    function DeleteGroup(obj)
+    {
+  
+     
+        $.ajax({
+            url: "/UserGroup/DeleteGroup", //获取数据列 
+            type: 'GET',
+            contentType: "application/json",
+            datatype: 'json',
+            data: {
+
+                groupid: $(obj).prev('input').eq(0).val()
+
+            },
+            success: function (data) {
+                console.log(data);//对数据进行处理
+                location.reload();
+            },
+            error: function (e) {
+                console.log(e)
+
+
+            }
+        });
+       
+    }
+
+</script>
+}

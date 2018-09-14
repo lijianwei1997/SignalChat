@@ -1,0 +1,78 @@
+﻿@using WebApplication1.Models;
+@{ 
+   
+    Layout = null;
+}
+
+<script src="~/Scripts/jquery-1.11.0.min.js"></script>
+
+@{
+    UserInfo u=Common.Common.GetTown(Common.Common.GetUser().id);
+    List<UserInfo> us = Common.Common.GetAllUser(u.town,u.township);
+   
+}
+<label style="display:none;" id="group">@ViewBag.groupid</label>
+@foreach (var item in us)
+{ 
+        if(item.userid==u.id)
+       {
+                continue;
+        }
+    <ul>
+
+
+        <li style="list-style-type: none">
+            <input type="hidden" value="@item.userid"/><input type="checkbox" value="" onclick="add(this)" />@item.name</li>
+    </ul>
+}
+
+<input type="button" value="添加" onclick="upload()" />
+
+<script>
+    str=new Array();
+
+    function add(demo) {
+        console.log($(demo).prop("checked"));
+        var st = $(demo).parent().find('input').eq(0).val();
+        console.log(st);
+        if ($(demo).prop("checked") == true) {
+          
+            console.log(st);
+           str.push(st)
+        }
+        else {
+          
+            str.pop(st);
+        }
+        console.log(str);
+    }//获取添加用户数组
+
+
+
+    function upload() {
+      
+        
+        alert(str);
+    
+        $.ajax({
+            url: "/Chat/AddGroupUsers/", //获取数据列 
+            type: 'Get',
+            contentType: "application/json",
+            datatype: 'json',
+            traditional:true,
+            data: {
+                ids: str,
+                id:document.getElementById("group").innerText.trim()
+               
+            },
+            success: function (data) {
+                console.log(data);//对数据进行处理 
+                location.href = "../Main"
+            }
+        });
+    }
+        
+      
+    
+   
+</script>

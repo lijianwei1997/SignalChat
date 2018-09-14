@@ -1,0 +1,80 @@
+﻿@model WebApplication1.Models.UserLogin
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>UserLogin</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.loginname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.loginname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.loginpwd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.loginpwd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.pid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.mobileid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.mobileid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.roleid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.roleid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.md5pass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.md5pass)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

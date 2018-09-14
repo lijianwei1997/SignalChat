@@ -1,0 +1,69 @@
+﻿@model IEnumerable<WebApplication1.Models.UserLogin>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.loginname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.loginpwd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.pid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.mobileid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.roleid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.md5pass)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.loginname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.loginpwd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.pid)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.mobileid)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.roleid)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.md5pass)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

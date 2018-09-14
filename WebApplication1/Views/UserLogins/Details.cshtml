@@ -1,0 +1,74 @@
+﻿@model WebApplication1.Models.UserLogin
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>UserLogin</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.loginname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.loginname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.loginpwd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.loginpwd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.pid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.mobileid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.mobileid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.roleid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.roleid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.md5pass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.md5pass)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,264 @@
+﻿
+@{
+
+
+    Layout = null;
+}
+
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta name="full-screen" content="yes">
+    <meta content="default" name="apple-mobile-web-app-status-bar-style">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="browsermode" content="application">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-page-mode" content="app">
+    <base target="_blank">
+    <title>会话_聊天机器人</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/Content/chat.css">
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.3.0.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/jquery.qqFace.js"></script>
+    <script type="text/javascript">
+     
+        var chat = $.connection.chathub;
+        var session ='@Session.SessionID.ToString()';
+          chat.client.SentMsgToPages = function (name, message) {
+
+            AddBackMsg(name, replace_em(message), 1)
+
+
+        };
+          $(function () {
+            $('#emotion').qqFace({
+                assign: 'text', //给输入框赋值
+                path: '../arclist/'    //表情图片存放的路径
+            });
+
+    });
+         $.connection.hub.start()
+      
+        function SendMsg() {
+       
+        var text = document.getElementById("text");
+        if (text.value == "" || text.value == null) {
+            alert("发送信息为空，请输入！")
+            }
+        else {
+            AddMsg(session, SendMsgDispose(text.value));
+
+            chat.server.send(session, text.value);
+            text.value = "";
+            
+        }
+    }
+    // 发送的信息处理
+    function SendMsgDispose(detail) {
+        detail = detail.replace("\n", "<br>").replace(" ", "&nbsp;")
+      
+        return replace_em(detail);
+    }
+
+
+        function replace_em(str) {
+            var builder = "";
+            var num = str.split("]");
+                
+            for (var i = 0; i < num.length; i++)
+            {
+              
+                var index = getnum(num[i]);
+                // alert(num[i]);
+                builder += num[i].replace(/.[e,m]+.[0-9]+/g, '<img src="../arclist/' + index + '.gif" border="0" />');
+            }
+
+            
+        
+           // alert(builder);
+
+            return builder;
+        }
+
+
+        function getnum(st)
+        {
+            var nu = st.replace(/[em_[^([1]?\d{1,2\)\)$]/ig, "")
+            var nu1 = st.replace(/[^0-9]/ig, "");
+           // alert(nu1);
+            return nu1;
+        }
+    //// 增加信息
+       function AddMsg(user, content) {
+        var str = CreateMsg(user, content,0);
+        var msgs = document.getElementById("msgs");
+        msgs.innerHTML = msgs.innerHTML + str;
+        }
+
+
+        function AddBackMsg(user, content) {
+            var str = CreateMsg(user, content,1);
+            var msgs = document.getElementById("msgs");
+            msgs.innerHTML = msgs.innerHTML + str;
+        }
+
+    //// 生成内容
+        function CreateMsg(user, content,back) {
+            var str = "";
+            if (back == 1)
+            {
+            if (user == session) {
+                return str;
+            }
+
+            }
+        if (user == session)
+        {
+            str = "<div class=\"msg guest\"><div class=\"msg-right\"><div class=\"msg-host headDefault\"></div><div class=\"msg-ball\" title=\"今天 17:52:06\">" + content + "</div></div></div>"
+        }
+        else
+        {
+            var time = new Date();
+            str = "<div class=\"msg robot\"><div class=\"msg-left\" worker=\"" + user + "\"><div class=\"msg-host photo\" style=\"background-image: url(../Images/Head.jpg)\"></div><div class=\"msg-ball\" title=\"" + time.toLocaleTimeString() + "\">" + content + "</div></div></div>";
+        }
+        return str;
+        }
+
+       
+
+        function OnimageLoaded()
+        {
+            var path = document.getElementById("image").value();
+            alert(path);
+            alert(1);
+        }
+
+        //Image传送
+        function uploadImg(na) {
+            var _name, _fileName, personsFile;
+            personsFile = document.getElementById("image");
+            _name = personsFile.value;
+            _fileName = _name.substring(_name.lastIndexOf(".") + 1).toLowerCase();
+            if (_fileName !== "png" && _fileName !== "jpg") {
+                alert("上传图片格式不正确，请重新上传");
+                document.getElementById("image").value = "";
+            }
+            Addimage(na);
+        }
+
+        $("#image").on('fileloaded', function (event, file, previewId, index, reader) {
+            var readers = new FileReader();
+            readers.onloadend = function () {
+                $(".file-preview-image").attr('src', readers.result);
+            };
+            readers.readAsDataURL(file);
+            alert(file)
+        });
+
+        $('#sendmessage').click(function () {
+            var imagesJson = $('.file-preview-image').map(function () {
+                var $this = $(this);
+                return {
+                    image: $this.attr('src'),
+                    filename: $this.attr('data-filename')
+                };
+            }).toArray();
+
+            chat.server.sendImage(userName, imagesJson);
+        });
+
+
+        //enter事件提交
+
+        document.onkeydown = keyDownSearch;
+
+        function keyDownSearch(e) {
+            // 兼容FF和IE和Opera 
+            var theEvent = e || window.event;
+            var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+            if (code == 13) {
+                document.getElementById("btnSent").click();//具体处理函数 
+                return false;
+            }
+            return true;
+        } 
+
+
+
+        function Addimage(url) {
+        var editor = document.getElementById('text');
+            var img = document.createElement('img');
+            alert(1);
+            img.src = "../Images/Head.jpg";
+            editor.appendChild(img);
+        }
+
+        //获取根本路径
+  
+    </script>
+</head>
+<body lang="zh">
+    <!--<img style="width:100%;height:100%" src="~/Images/chatBack.jpg">-->
+    <input type="hidden" value="" id="session" />
+    <div class="abs cover contaniner">
+        <div class="abs cover pnl">
+            
+            <div class="top pnl-head"></div>
+            <div class="abs cover pnl-body" id="pnlBody">
+                <div class="abs cover pnl-left">
+                    <div class="abs cover pnl-msgs scroll" id="show">
+                        <div class="msg min time" id="histStart">加载历史消息</div>
+                        <div class="pnl-list" id="hists">
+                            <!-- 历史消息 -->
+                        </div>
+                        <input type="file"  style="display:block" id="image" name="image"   onchange="uploadImg(this)" />
+                        <div class="pnl-list" id="msgs">
+                        </div>
+                        <div class="pnl-list hide" id="unreadLine">
+                            <div class="msg min time unread">未读消息</div>
+                        </div>
+                    </div>
+                    <div class="abs bottom pnl-text">
+                        <div class="abs top pnl-warn" id="pnlWarn">
+                            <div class="fl btns rel pnl-warn-free">
+                                <img src="../Images/icon/Smile.png" class="kh warn-btn" title="表情" id="emotion" />
+                                <img src="../Images/icon/pic.png" class="kh warn-btn" title="图片" id="emojiBtn"  onclick="document.getElementById('image').click()"/>
+                                <img src="../Images/icon/camera.png" class="kh warn-btn" title="图片" id="emojiBtn" />
+                                <img src="../Images/icon/edit.png" class="kh warn-btn" title="保存" id="emojiBtn" />
+                            </div>
+                        </div>
+                        <div class="abs cover pnl-input" id="message">
+                            <textarea class="scroll" id="text" name="text" wrap="hard" placeholder="在此输入文字信息..."></textarea>
+                            <div class="abs atcom-pnl scroll hide" id="atcomPnl">
+                                <ul class="atcom" id="atcom"></ul>
+                            </div>
+                        </div>
+                        <div class="abs br pnl-btn" id="btnSent" style="background-color: rgb(32, 196, 202); color: rgb(255, 255, 255);" onclick="SendMsg()">发送</div>
+                        <div class="pnl-support" id="copyright">
+                            <a href="#">
+                                Copyrights
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        jQuery.browser = {}; (function () { jQuery.browser.msie = false; jQuery.browser.version = 0; if (navigator.userAgent.match(/MSIE ([0-9]+)./)) { jQuery.browser.msie = true; jQuery.browser.version = RegExp.$1; } })();
+    </script>
+</body>
+
+</html>
